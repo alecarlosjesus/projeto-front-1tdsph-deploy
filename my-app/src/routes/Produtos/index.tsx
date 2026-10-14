@@ -7,6 +7,8 @@ import { MdOutlineDeleteForever as Excluir } from "react-icons/md";
 export default function Produtos() {
   document.title = "Produtos";
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const navigate = useNavigate()
 
   const [produtos, setProdutos] = useState<TipoProduto[]>([]);
@@ -16,14 +18,23 @@ export default function Produtos() {
     const carregaProdutos = async () => {
 
       try {
-        const resposta = await fetch("http://localhost:3001/produtos");
+        // const resposta = await fetch("http://localhost:3001/produtos");
+        const resposta = await fetch(API_URL);
 
         if (!resposta.ok) {
           throw new Error("Erro na listagem dos produtos!");
         }
 
-        const data: TipoProduto[] = await resposta.json();
-        setProdutos(data);
+        // const data: TipoProduto[] = await resposta.json();
+        // setProdutos(data);
+
+        const resultado:any = await resposta.json();
+
+        if(resultado.status === "error"){
+          throw new Error(resultado.message);
+        }
+        
+        setProdutos(resultado.data);
 
       } catch (error) {
         console.error(error);
@@ -67,6 +78,7 @@ export default function Produtos() {
               <th>NOME</th>
               <th>PREÇO</th>
               <th>ESTOQUE</th>
+              <th>AVATAR</th>
               <th>AÇÕES</th>
             </tr>
           </thead>
@@ -77,6 +89,7 @@ export default function Produtos() {
                 <td>{produto.nome}</td>
                 <td>{produto.preco}</td>
                 <td>{produto.estoque}</td>
+                <td><img src={produto.avatar} alt={produto.nome} /></td>
                 <td>
                   <Link to={`/editar-produto/${produto.id}`}> <Editar /> </Link>
                   |
