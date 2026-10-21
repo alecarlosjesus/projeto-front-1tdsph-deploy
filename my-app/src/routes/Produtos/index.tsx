@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { TipoProduto } from "../../types/types";
-import { Link, useNavigate } from "react-router";
+import { Link}  from "react-router";
 import { FaRegEdit as Editar } from "react-icons/fa";
 import { MdOutlineDeleteForever as Excluir } from "react-icons/md";
 
@@ -8,8 +8,6 @@ export default function Produtos() {
   document.title = "Produtos";
 
   const API_URL = import.meta.env.VITE_API_URL;
-
-  const navigate = useNavigate()
 
   const [produtos, setProdutos] = useState<TipoProduto[]>([]);
 
@@ -24,7 +22,6 @@ export default function Produtos() {
           throw new Error("Erro na listagem dos produtos!");
         }
 
-        // const resultado:any = await resposta.json();
         const {status, data} = await resposta.json();
 
         if(status === "error"){
@@ -45,8 +42,16 @@ export default function Produtos() {
   const handleDelete = async (id: string) => {
     try {
 
-      const resposta = await fetch(`http://localhost:3001/produtos/${id}`, {
-        method: "DELETE"
+      // const resposta = await fetch(`http://localhost:3001/produtos/${id}`, {
+      //   method: "DELETE"
+      // });
+
+      const resposta = await fetch(API_URL, {
+        method: "POST",
+        headers:{
+          "Content-Type":"text/plain;charset=utf-8"
+        },
+        body: JSON.stringify({action:"DELETE",id:id})
       });
 
       //ERROR
@@ -54,11 +59,16 @@ export default function Produtos() {
         throw new Error(`Ocorreu um erro na exclusão do produto: ${resposta.status} - ${resposta.statusText}`);
       }
 
+        const {status} = await resposta.json();
+
+        if(status === "error"){
+          throw new Error(`Erro na exclusão do produto: ${status}`);
+        }
+
       //SUCCESS
       alert("Produto excluído com sucesso!");
-      //REDIRECT
-      navigate("/");
-
+      //Recarregando o state de produtos.
+      setProdutos((prevProdutos)=> prevProdutos.filter((p)=> p.id !== id));
     } catch (error) {
       console.error(error);
     }
