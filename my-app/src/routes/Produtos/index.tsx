@@ -4,10 +4,11 @@ import { Link}  from "react-router";
 import { FaRegEdit as Editar } from "react-icons/fa";
 import { MdOutlineDeleteForever as Excluir } from "react-icons/md";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Produtos() {
   document.title = "Produtos";
 
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const [produtos, setProdutos] = useState<TipoProduto[]>([]);
 

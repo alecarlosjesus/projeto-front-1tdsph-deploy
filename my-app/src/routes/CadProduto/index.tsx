@@ -2,26 +2,35 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import type { TipoProduto } from "../../types/types";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function CadProduto() {
   document.title = "Cadastrar Produto";
   const navigate = useNavigate();
 
-  const [produto, setProduto] = useState<TipoProduto>({ id:"", nome:"" , preco:0 , estoque:0 , avatar:""});
+  const [produto, setProduto] = useState<TipoProduto>({ id:"", nome:"" , preco:0 , estoque:0 , avatar:"https://placehold.co/200x200/000000/FFFFFF/png"});
 
   const handleSubmit = async ()=>{
     try {
 
-      const response = await fetch(`http://localhost:3001/produtos/`,{
+      const response = await fetch(API_URL,{
         method:"POST",
         headers:{
-          "Content-Type":"application/json"
+          "Content-Type":"text/plain;charset=utf-8"
         },
-        body: JSON.stringify(produto)
+        body: JSON.stringify(produto), redirect:"follow"
       });
       
       //ERRO
         if (!response.ok) {
           throw new Error(`Erro no cadastro do produto: ${response.status} - ${response.statusText}`);
+        }
+
+        //VERIFICANDO ERROS NA TRANSAÇÃO DA PLANILHA
+        const{status} = await response.json();
+
+        if (status === "error") {
+          throw new Error(`Erro no cadastro do produto: ${status}`);
         }
 
         //SUCCESS
@@ -54,7 +63,16 @@ export default function CadProduto() {
           <input type="number" step={1} name="estoque" id="estoque" value={produto.estoque} onChange={(event)=> setProduto({...produto,estoque:parseInt(event.target.value)})}/>
             </div>
             <div>
-              <button type="button" onClick={()=> handleSubmit()}>EDITAR</button>
+              <label htmlFor="avatar">Avatar do Produto:</label>
+          <input type="url" name="avatar" id="avatar" value={produto.avatar} onChange={(event)=> setProduto({...produto,avatar:event.target.value})}/>
+            </div>
+            <div>
+              <figure>
+                <img src={produto.avatar} alt={produto.nome} /> 
+              </figure>
+            </div>
+            <div>
+              <button type="button" onClick={()=> handleSubmit()}>CADASTRAR</button>
             </div>
           </fieldset>
         </form>
