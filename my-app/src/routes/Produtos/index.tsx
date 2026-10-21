@@ -18,23 +18,20 @@ export default function Produtos() {
     const carregaProdutos = async () => {
 
       try {
-        // const resposta = await fetch("http://localhost:3001/produtos");
         const resposta = await fetch(API_URL);
 
         if (!resposta.ok) {
           throw new Error("Erro na listagem dos produtos!");
         }
 
-        // const data: TipoProduto[] = await resposta.json();
-        // setProdutos(data);
+        // const resultado:any = await resposta.json();
+        const {status, data} = await resposta.json();
 
-        const resultado:any = await resposta.json();
-
-        if(resultado.status === "error"){
-          throw new Error(resultado.message);
+        if(status === "error"){
+          throw new Error(`Erro na listagem do produto: ${status}`);
         }
         
-        setProdutos(resultado.data);
+        setProdutos(data);
 
       } catch (error) {
         console.error(error);

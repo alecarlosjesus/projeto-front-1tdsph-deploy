@@ -6,7 +6,7 @@ export default function CadProduto() {
   document.title = "Cadastrar Produto";
   const navigate = useNavigate();
 
-  const [produto, setProduto] = useState<TipoProduto>({ id:"", nome:"" , preco:0 , estoque:0 });
+  const [produto, setProduto] = useState<TipoProduto>({ id:"", nome:"" , preco:0 , estoque:0 , avatar:""});
 
   const handleSubmit = async ()=>{
     try {

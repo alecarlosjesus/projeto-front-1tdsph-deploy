@@ -10,7 +10,7 @@ export default function EditarProduto() {
 
   const { id } = useParams<{id:string}>();
 
-  const [produto, setProduto] = useState<TipoProduto>({ id:"", nome:"" , preco:0 , estoque:0 });
+  const [produto, setProduto] = useState<TipoProduto>({ id:"", nome:"" , preco:0 , estoque:0, avatar:""});
 
   useEffect( ()=> {
 
@@ -24,7 +24,7 @@ export default function EditarProduto() {
           throw new Error(`Erro na recuperação do produto: ${response.status} - ${response.statusText}`);
         }
 
-        const data: TipoProduto = await response.json();
+        const data: TipoProduto = await response.json(); 
         setProduto(data);
 
       } catch (error) {
